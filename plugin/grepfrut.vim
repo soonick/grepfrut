@@ -49,6 +49,6 @@ function s:RunCommand(cmd)
   let cmd_output = system(a:cmd)
 
   " Open the output in a quickfix window
-  caddexpr cmd_output
+  cgetexpr cmd_output
   copen
 endfunction

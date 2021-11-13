@@ -1,9 +1,10 @@
 " Define the grepfrut command
-command! -nargs=1 Gf call s:Grepfrut(<f-args>)
+command! -nargs=1 Gf call s:Grepfrut(<f-args>, 1)
+command! -nargs=1 Gfi call s:Grepfrut(<f-args>, 0)
 
 " Entry point for the plugin
 " search_string is the string we are going to grep for
-function s:Grepfrut(search_string)
+function s:Grepfrut(search_string, case_sensitive)
   " Ask user which directory they want to search
   let cwd = getcwd()
   let search_dir = input("Start searching from directory: ", cwd, "dir")
@@ -16,7 +17,7 @@ function s:Grepfrut(search_string)
 
   " Run the command
   echo "\r"
-  let cmd = s:BuildGrepCommand(a:search_string, search_dir, search_files, exclude_files)
+  let cmd = s:BuildGrepCommand(a:search_string, search_dir, search_files, exclude_files, a:case_sensitive)
   call s:RunCommand(cmd)
 endfunction
 
@@ -27,7 +28,8 @@ endfunction
 "                 include_files is empty, all files will be grepped
 " exclude_files - Files matching this pattern will not be grepped. If empty, all
 "                 files will be grepped
-function s:BuildGrepCommand(search_string, dir, include_files, exclude_files)
+" case_sensitive - Weather we are doing a case sensitive match or not
+function s:BuildGrepCommand(search_string, dir, include_files, exclude_files, case_sensitive)
   let cmd = "find " . a:dir . " -type f "
 
   if a:include_files != ""
@@ -38,7 +40,11 @@ function s:BuildGrepCommand(search_string, dir, include_files, exclude_files)
     let cmd = cmd . " | grep -v \"" . a:exclude_files . "\""
   endif
 
-  let cmd = cmd . " | xargs grep -n \"" . a:search_string . "\""
+  if a:case_sensitive == 1
+    let cmd = cmd . " | xargs grep -n \"" . a:search_string . "\""
+  else
+    let cmd = cmd . " | xargs grep -n -i \"" . a:search_string . "\""
+  endif
 
   return cmd
 endfunction

@@ -7,3 +7,17 @@ Grepfrut is a Vim plugin to search for a string on multiple files (`grep`). Just
 ```
 :Gf blue car
 ```
+
+To do a case insensitive search:
+
+```
+:Gfi blue car
+```
+
+## Configurations
+
+To make Grepfrut always ignore some files, use the `g:grepfrut_global_exclude` option:
+
+```
+let g:grepfrut_global_exclude = '.*(node_modules|\.next|\.git).*'
+```

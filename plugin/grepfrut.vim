@@ -32,6 +32,13 @@ endfunction
 function s:BuildGrepCommand(search_string, dir, include_files, exclude_files, case_sensitive)
   let cmd = "find " . a:dir . " -type f "
 
+  let global_exclude = get(g:, 'grepfrut_global_exclude', "")
+  if global_exclude != ""
+    " This command basically means: find all files in a:dir, except for the ones
+    " That match global_exclude regex
+    let cmd = "find " . a:dir . " -type d \\( -regextype posix-extended -regex \"" . global_exclude . "\" \\) -prune -o -print"
+  endif
+
   if a:include_files != ""
     let cmd = cmd . " | grep \"" . a:include_files . "\""
   endif
@@ -41,9 +48,9 @@ function s:BuildGrepCommand(search_string, dir, include_files, exclude_files, ca
   endif
 
   if a:case_sensitive == 1
-    let cmd = cmd . " | xargs grep -n \"" . a:search_string . "\""
+    let cmd = cmd . " | xargs grep -n \"" . a:search_string . "\" 2>1"
   else
-    let cmd = cmd . " | xargs grep -n -i \"" . a:search_string . "\""
+    let cmd = cmd . " | xargs grep -n -i \"" . a:search_string . "\" 2>1"
   endif
 
   return cmd

@@ -48,9 +48,9 @@ function s:BuildGrepCommand(search_string, dir, include_files, exclude_files, ca
   endif
 
   if a:case_sensitive == 1
-    let cmd = cmd . " | xargs grep -n \"" . a:search_string . "\" 2>1"
+    let cmd = cmd . " | xargs grep -n \"" . a:search_string . "\" 2> /dev/null"
   else
-    let cmd = cmd . " | xargs grep -n -i \"" . a:search_string . "\" 2>1"
+    let cmd = cmd . " | xargs grep -n -i \"" . a:search_string . "\" 2> /dev/null"
   endif
 
   return cmd
